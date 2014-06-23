@@ -21,39 +21,39 @@ class Dinosaur
   end
 
   def ==(other)
-    TRAITS.each { |attr| return false if other.send(attr) != self.send(attr) }
+    TRAITS.all? { |attr| other.send(attr) == self.send(attr) }
   end
 
   def attr_hash
-    TRAITS.map { |attr| [attr, self.send(attr)] }.to_h
+    TRAITS.inject({}){ |hash, attr| hash[attr] = self.send(attr) }
   end
 
   def to_s
-    defined_attributes = attr_hash.select { |_, val| val != nil }
-    defined_attributes.reduce("") do |str, (attr, val)|
-      str << "#{attr.to_s.capitalize}: #{val.to_s}\n"
-    end.chomp
+    attr_hash.map do |attr, val|
+      "#{attr.to_s.capitalize}: #{val.to_s}" unless val.nil?
+    end.compact.join("\n")
   end
 
   def carnivore?
-    CARNIVOROUS_DIETS.include?(@diet)
+    CARNIVOROUS_DIETS.include?(diet)
   end
 
   def biped?
-    @walking.eql? "Biped"
+    walking.eql? "Biped"
   end
 
   #TODO: is there a better way?
-  def from?(period)
-    @period.downcase.include?(period.to_s.tr('_', ' '))
+  def from?(target_period)
+    target_period = target_period.to_s.gsub!('_', '')
+    period =~ /#{target_period}/i
   end
 
   def heavy?
-    @weight && @weight > 4000
+    weight && weight > 4000
   end
 
   def light?
-    @weight && @weight < 4000
+    weight && weight =< 4000
   end
 end
 

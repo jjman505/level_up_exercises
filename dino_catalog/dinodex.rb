@@ -1,11 +1,9 @@
 class Dinodex
-  include Enumerable
-
   attr_accessor :dinos
 
   def initialize(dinos = [])
     @dinos = []
-    self.parse_dinos(dinos)
+    parse_dinos(dinos)
   end
 
   def parse_dinos(dinos)
@@ -22,11 +20,11 @@ class Dinodex
   end
 
   def bipeds
-    select { |dino| dino.biped? }
+    select(&:biped?)
   end
 
   def carnivores
-    select { |dino| dino.carnivore? }
+    select(&:carnivore?)
   end
 
   def from_period(period)
@@ -34,14 +32,14 @@ class Dinodex
   end
 
   def big_dinos
-    select { |dino| dino.heavy? }
+    select(&:heavy?)
   end
 
   def small_dinos
-    select { |dino| dino.light? }
+    select(&:light?)
   end
 
   def names
-    @dinos.map { |dino| dino.name }
+    @dinos.map(&:name)
   end
 end
