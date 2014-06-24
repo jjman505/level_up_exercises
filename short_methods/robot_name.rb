@@ -10,16 +10,14 @@ class Robot
     @@registry ||= []
     @name_generator = args[:name_generator]
 
-    if @name_generator
-      @name = @name_generator.call
-    else
-      @name = Robot.generate_name
+    generate_name
+
+    if name_valid?
+      @@registry << @name
     end
-
-    name_valid?
-
-    @@registry << @name
   end
+
+  private
 
   def name_valid?
     name_properly_formatted? && name_unique?
@@ -37,10 +35,12 @@ class Robot
     end
   end
 
-  private
-
-  def self.generate_name
-    "#{generate_chars(2)}#{generate_nums(3)}"
+  def generate_name
+    @name = if @name_generator
+      @name_generator
+    else
+      "#{Robot.generate_chars(2)}#{Robot.generate_nums(3)}"
+    end
   end
 
   def self.generate_chars(n)
