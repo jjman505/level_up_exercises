@@ -2,14 +2,16 @@ require 'csv'
 
 class DinoCSV
   def self.read(filename)
-    CSV.table(filename).map do |row|
-      row.reduce({}) do |hash, (k, v)|
-        hash.merge({ normalize_header(k) => normalize_cell(v) })
-      end
-    end
+    CSV.table(filename).map { |row| dino_hash(row) }
   end
 
   private
+
+  def self.dino_hash(row)
+    row.reduce({}) do |hash, (k, v)|
+      hash.merge({ normalize_header(k) => normalize_cell(v) })
+    end
+  end
 
   def self.normalize_header(item)
     normalize_data_item(item, {

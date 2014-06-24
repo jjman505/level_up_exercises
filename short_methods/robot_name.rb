@@ -1,3 +1,4 @@
+class NameFormatError < RuntimeError; end;
 class NameCollisionError < RuntimeError; end;
 
 class Robot
@@ -9,20 +10,46 @@ class Robot
     @@registry ||= []
     @name_generator = args[:name_generator]
 
-
     if @name_generator
       @name = @name_generator.call
     else
-      generate_char = -> { ('A'..'Z').to_a.sample }
-      generate_num = -> { rand(10) }
-
-      @name = "#{generate_char.call}#{generate_char.call}#{generate_num.call}#{generate_num.call}#{generate_num.call}"
+      @name = Robot.generate_name
     end
 
-    raise NameCollisionError, 'There was a problem generating the robot name!' if !(name =~ /[[:alpha:]]{2}[[:digit:]]{3}/) || @@registry.include?(name)
+    name_valid?
+
     @@registry << @name
   end
 
+  def name_valid?
+    name_properly_formatted? && name_unique?
+  end
+
+  def name_properly_formatted?
+    unless name =~ /[[:alpha:]]{2}[[:digit:]]{3}/
+      raise NameFormatError, 'The robot name was improperly formatted!'
+    end
+  end
+
+  def name_unique?
+    if @@registry.include?(name)
+      raise NameCollisionError, 'The generated robot name was already taken!'
+    end
+  end
+
+  private
+
+  def self.generate_name
+    "#{generate_chars(2)}#{generate_nums(3)}"
+  end
+
+  def self.generate_chars(n)
+    (1..n).map { ('A'..'Z').to_a.sample }.join("")
+  end
+
+  def self.generate_nums(n)
+    (1..n).map { rand(10) }.join("")
+  end
 end
 
 robot = Robot.new

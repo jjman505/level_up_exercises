@@ -7,28 +7,28 @@ class Triangle
     @side3 = side3
   end
 
-  def equalateral()
+  def equalateral?
     side1 == side2 && side2 == side3
   end
 
-  def isosceles()
+  def isosceles?
     [side1, side2, side3].uniq.length == 2
   end
 
-  def scalene()
-    unless equalateral || isosceles
+  def scalene?
+    !(equalateral? || isosceles?)
   end
 
   def recite_facts
-    if equalateral
+    if equalateral?
       puts "This triangle is equalateral!"
-    elsif isoscele
+    elsif isosceles?
       puts "This triangle is isosceles! Also, that word is hard to type."
-    elsif scalene
+    elsif scalene?
       puts "This triangle is scalene and mathematically boring."
     end
 
-    angles = calculate_angles(side1, side2, side3)
+    angles = calculate_angles
     puts "The angles of this triangle are #{angles.join(", ")}"
 
     if angles.include? 90
@@ -37,12 +37,21 @@ class Triangle
     puts ""
   end
 
-  def calculate_angles(a, b, c)
-    angleA = radians_to_degrees(Math.acos((b**2 + c**2 - a**2) / (2.0 * b * c)))
-    angleB = radians_to_degrees(Math.acos((a**2 + c**2 - b**2) / (2.0 * a * c)))
-    angleC = radians_to_degrees(Math.acos((a**2 + b**2 - c**2) / (2.0 * a * b)))
+  def calculate_angles
+    a, b, c = sides
+    angle_a = complementary_angle((b**2 + c**2 - a**2) / (2.0 * b * c))
+    angle_b = complementary_angle((a**2 + c**2 - b**2) / (2.0 * a * c))
+    angle_c = complementary_angle((a**2 + b**2 - c**2) / (2.0 * a * b))
 
-    [angleA,  angleB, angleC]
+    [angle_a, angle_b, angle_c]
+  end
+
+  def complementary_angle(law_of_cosines_operand)
+    radians_to_degrees(Math.acos(law_of_cosines_operand))
+  end
+
+  def sides
+    [side1, side2, side3]
   end
 
   def radians_to_degrees(rads)
