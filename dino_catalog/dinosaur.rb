@@ -1,11 +1,7 @@
 def Dinosaur(item)
-  if item.is_a? Dinosaur
-    Dinosaur.new(item.attr_hash)
-  elsif item.is_a? Hash
-    Dinosaur.new(item)
-  else
-    raise WrongArgumentTypeError
-  end
+  return item if item.is_a? Dinosaur
+  return Dinosaur.new(item) if item.is_a? Hash
+  raise TypeError, "Cannot convert #{item.inspect} to Dinosaur"
 end
 
 class Dinosaur
@@ -25,7 +21,9 @@ class Dinosaur
   end
 
   def attr_hash
-    TRAITS.inject({}){ |hash, attr| hash[attr] = self.send(attr) }
+    hash = {}
+    TRAITS.each { |attr| hash.merge!(attr => self.send(attr)) }
+    hash
   end
 
   def to_s
@@ -44,7 +42,7 @@ class Dinosaur
 
   #TODO: is there a better way?
   def from?(target_period)
-    target_period = target_period.to_s.gsub!('_', '')
+    target_period = target_period.to_s.gsub('_', ' ')
     period =~ /#{target_period}/i
   end
 
@@ -53,7 +51,7 @@ class Dinosaur
   end
 
   def light?
-    weight && weight =< 4000
+    weight && weight <= 4000
   end
 end
 

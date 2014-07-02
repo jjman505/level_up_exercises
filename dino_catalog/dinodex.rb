@@ -43,3 +43,4 @@ class Dinodex
     @dinos.map(&:name)
   end
 end
+

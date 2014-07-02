@@ -1,12 +1,12 @@
-require 'minitest/autorun'
-require 'csv'
-require_relative '../dinodex'
+require 'minitest/autorun'     # => true
+require 'csv'                  # => true
+require_relative '../dinodex'  # ~> LoadError: cannot load such file -- /private/var/folders/wz/v_ty7wz108v3tz90gg627nt40000gp/T/dinodex
 
 describe Dinodex, "Dinodex" do
   before do
     #TODO: don't use DinoCSV to test Dinodex
-    @dinodex = Dinodex.new(DinoCSV.read("test/dino_test.csv"))
-    @dinodex.parse_dinos(DinoCSV.read("test/african_test.csv"))
+    @dinodex = Dinodex.new(DinoCsv.read("test/dino_test.csv"))
+    @dinodex.parse_dinos(DinoCsv.read("test/african_test.csv", converter: :african))
     @periods = {
       :jurassic => ["Abrictosaurus", "Megalosaurus"],
       :cretaceous => ["Albertosaurus", "Albertonykus", "Paralititan"],
@@ -50,3 +50,19 @@ describe Dinodex, "Dinodex" do
   end
 end
 
+
+# >> Run options: --seed 32108
+# >> 
+# >> # Running:
+# >> 
+# >> 
+# >> 
+# >> Finished in 0.000710s, 0.0000 runs/s, 0.0000 assertions/s.
+# >> 
+# >> 0 runs, 0 assertions, 0 failures, 0 errors, 0 skips
+
+# ~> LoadError
+# ~> cannot load such file -- /private/var/folders/wz/v_ty7wz108v3tz90gg627nt40000gp/T/dinodex
+# ~>
+# ~> /var/folders/wz/v_ty7wz108v3tz90gg627nt40000gp/T/seeing_is_believing_temp_dir20140701-33762-vf2bww/program.rb:3:in `require_relative'
+# ~> /var/folders/wz/v_ty7wz108v3tz90gg627nt40000gp/T/seeing_is_believing_temp_dir20140701-33762-vf2bww/program.rb:3:in `<main>'

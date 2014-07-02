@@ -1,40 +1,47 @@
-class NumberUtils
-  attr_accessor :values, :i
+class PrimeFactorization
+  attr_accessor :factors, :max_index
 
-  def initialize(i = 1_000)
-    @values = {}
-    @i = i
-    do_it
+  def initialize(max_index = 1_000)
+    factors = {}
+    @max_index = max_index
+    set_factors
   end
 
-  def do_it
-    1.upto(@i) do |i|
-      @values[i] = get_values_for(i)
+  def set_factors
+    1.upto(max_index) do |index|
+      factors[index] = get_prime_factorization_for(index)
     end
   end
 
-  def get_values_for(i)
-    i2 = i
-    v = []
-    2.upto(i) do |n|
-      while (i2 % n).zero?
-        v << n
-        i2 = i2 / n
+  def get_prime_factorization_for(number)
+    dividee = number
+    factors = []
+    (2..number).each do |n|
+      # add factors
+      while divides?(dividee, n)
+        factors << n
+        dividee /= n
       end
     end
-    v
+    factors
   end
 
-  def get_values(i)
-    raise 'Value too high!' unless i <= @i
-    @values[i]
+  def get_values(index)
+    raise RangeError, 'Value too high!' unless index <= max_index
+    factors[index]
   end
 
   def all
-    @values
+    factors
+  end
+
+  private
+
+  def divides?(number, divisor)
+    number % divisor == 0
   end
 end
 
 
-u = NumberUtils.new(100)
+u = PrimeFactorization.new(100)
 puts u.all

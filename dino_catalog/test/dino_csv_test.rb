@@ -2,9 +2,9 @@ require 'minitest/autorun'
 require 'csv'
 require_relative '../dino_csv'
 
-describe DinoCSV do
+describe DinoCsv do
   it "must return properly formatted hashes" do
-    DinoCSV.read("test/dino_test.csv").first.must_equal({
+    DinoCsv.read("test/dino_test.csv").first.must_equal({
       :name => "Albertosaurus",
       :period => "Late Cretaceous",
       :continent => "North America",
@@ -13,7 +13,7 @@ describe DinoCSV do
       :walking => "Biped",
       :description => "Like a T-Rex but smaller."
     })
-    DinoCSV.read("test/african_test.csv").first.must_equal({
+    DinoCsv.read("test/african_test.csv", converter: :african).first.must_equal({
       :name => "Abrictosaurus",
       :period => "Jurassic",
       :diet => "Herbivore",

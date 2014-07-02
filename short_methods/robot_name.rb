@@ -36,19 +36,25 @@ class Robot
   end
 
   def generate_name
-    @name = if @name_generator
-      @name_generator
-    else
-      "#{Robot.generate_chars(2)}#{Robot.generate_nums(3)}"
-    end
+    @name = @name_generator || "#{Robot.generate_chars(2)}#{Robot.generate_nums(3)}"
   end
 
   def self.generate_chars(n)
-    (1..n).map { ('A'..'Z').to_a.sample }.join("")
+    (1..n).map { generate_char }.join("")
+  end
+
+  def self.generate_char
+    ('A'..'Z').to_a.sample
   end
 
   def self.generate_nums(n)
-    (1..n).map { rand(10) }.join("")
+    numstring = ""
+    n.times { numstring << generate_num }
+    numstring
+  end
+
+  def self.generate_num
+    rand(10)
   end
 end
 

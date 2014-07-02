@@ -1,35 +1,57 @@
 require 'csv'
 
-class DinoCSV
-  def self.read(filename)
-    CSV.table(filename).map { |row| dino_hash(row) }
+class DinoCsv
+  def self.read(filename, options = {})
+    CSV.table(filename).map { |row| dino_hash(row, options) }
   end
 
   private
 
-  def self.dino_hash(row)
-    row.reduce({}) do |hash, (k, v)|
-      hash.merge({ normalize_header(k) => normalize_cell(v) })
+  def self.dino_hash(row, options)
+    Hash[ row.map { |k, v| convert(k, v, options) } ]
+  end
+
+  def self.convert(k, v, options = {})
+    return BasicConverter.convert(k, v) unless options[:converter]
+    case options[:converter]
+    when :african
+      AfricanConverter.convert(k, v)
     end
   end
 
-  def self.normalize_header(item)
-    normalize_data_item(item, {
-      :genus => :name,
-      :carnivore => :diet,
-      :weight_in_lbs => :weight
-    })
+  class Converter
+    CONVERSIONS = Hash.new { |_, k| k }
+
+    def self.convert(key, value)
+      [ CONVERSIONS[key] || key, CONVERSIONS[value] || value ]
+    end
   end
 
-  def self.normalize_cell(item)
-    normalize_data_item(item, {
-      "yes" => "Carnivore",
-      "no" => "Herbivore"
-    })
+  class BasicConverter < Converter
+    # TODO: better way to merge?
+    CONVERSIONS.merge!(:weight_in_lbs => :weight)
   end
 
-  def self.normalize_data_item(item, conversions)
-    (item.respond_to?(:downcase) && conversions[item.downcase]) || item
+  class AfricanConverter < Converter
+    # TODO: better way to merge?
+    CONVERSIONS.merge!(:genus => :name)
+
+    DIET_CONVERSIONS = {
+      "Yes" => "Carnivore",
+      "No" => "Herbivore"
+    }
+
+    def self.convert(key, value)
+      if key =~ /carnivore/i
+        [ :diet, convert_diet(value) ]
+      else
+        super
+      end
+    end
+
+    def self.convert_diet(value)
+      DIET_CONVERSIONS[value]
+    end
   end
 end
 
