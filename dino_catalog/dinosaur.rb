@@ -5,15 +5,15 @@ def Dinosaur(item)
 end
 
 class Dinosaur
-  TRAITS = [ :name, :period, :continent,
-             :diet, :weight, :walking, :description ]
+  DINOSAUR_ATTRS = [ :name, :period, :continent, :diet, :weight, :walking,
+                     :description ].freeze unless defined?(DINOSAUR_ATTRS)
 
-  attr_accessor *TRAITS
+  attr_accessor *DINOSAUR_ATTRS
 
   CARNIVOROUS_DIETS = [ "Carnivore", "Insectivore", "Piscivore" ]
 
-  def initialize(dino_hash = {})
-    dino_hash.each { |key, val| send("#{key}=", val) }
+  def initialize(attrs = {})
+    attrs.each { |key, val| send("#{key}=", val) }
   end
 
   def ==(other)
