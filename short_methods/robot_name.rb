@@ -20,16 +20,16 @@ class Robot
   private
 
   def name_valid?
-    name_properly_formatted? && name_unique?
+    properly_formatted? && unique?
   end
 
-  def name_properly_formatted?
+  def properly_formatted?
     unless name =~ /[[:alpha:]]{2}[[:digit:]]{3}/
       raise NameFormatError, 'The robot name was improperly formatted!'
     end
   end
 
-  def name_unique?
+  def unique?
     if @@registry.include?(name)
       raise NameCollisionError, 'The generated robot name was already taken!'
     end
@@ -48,13 +48,7 @@ class Robot
   end
 
   def self.generate_nums(n)
-    numstring = ""
-    n.times { numstring << generate_num }
-    numstring
-  end
-
-  def self.generate_num
-    rand(10)
+    n.times.map { rand(10) }.join
   end
 end
 
@@ -65,3 +59,4 @@ puts "My pet robot's name is #{robot.name}, but we usually call him sparky."
 # generator = -> { 'AA111' }
 # Robot.new(name_generator: generator)
 # Robot.new(name_generator: generator)
+#
